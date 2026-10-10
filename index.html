@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MealPrep Companion</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍃</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/components.css">
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand"><span class="logo" aria-hidden="true">🍃</span><h1>MealPrep Companion</h1></div>
+    <form id="search-form" class="search" role="search">
+      <label for="search-input" class="sr-only">Search recipes or ingredient</label>
+      <input id="search-input" type="search" placeholder="Search ingredient… (chicken, pasta)" required>
+      <button type="submit" class="btn">Search</button>
+    </form>
+    <button id="surprise-btn" class="btn btn-alt" type="button">🎲 Surprise Me!</button>
+  </header>
+
+  <div class="tip" id="daily-tip" aria-live="polite">Daily tip: coming in Week 6.</div>
+
+  <main class="layout">
+    <section class="content" aria-labelledby="results-heading">
+      <div class="filters">
+        <label for="category-select">Category:</label>
+        <select id="category-select"><option value="">All</option></select>
+      </div>
+      <h2 id="results-heading">Recipes</h2>
+      <p id="status" role="status" aria-live="polite">Search for an ingredient to get started.</p>
+      <div id="results" class="grid"></div>
+    </section>
+
+    <aside class="sidebar" aria-labelledby="grocery-heading">
+      <h2 id="grocery-heading">Grocery List</h2>
+      <p class="empty">Your grocery list is empty. (Interactive list arrives in Week 6.)</p>
+    </aside>
+  </main>
+
+  <dialog id="recipe-modal" aria-labelledby="modal-title"></dialog>
+
+  <footer>MealPrep Companion © 2026 | WDD 330 Project</footer>
+</body>
+</html>

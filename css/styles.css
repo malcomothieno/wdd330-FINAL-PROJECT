@@ -1,0 +1,18 @@
+:root{--accent:#16A34A;--accent2:#EAB308;--bg:#F8FAFC;--surface:#FFFFFF;--text:#0F172A;--muted:#475569;--radius:12px}
+*{box-sizing:border-box}
+body{margin:0;font-family:Poppins,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.site-header{display:flex;flex-wrap:wrap;gap:.75rem;align-items:center;padding:1rem 1.5rem;background:var(--surface);box-shadow:0 2px 8px rgb(0 0 0/.08)}
+.brand{display:flex;align-items:center;gap:.5rem}
+.brand h1{font-size:1.25rem;margin:0}
+.logo{background:var(--accent);border-radius:12px;padding:.25rem .5rem;box-shadow:0 2px 6px rgb(0 0 0/.2)}
+.search{display:flex;flex:1 1 260px;gap:.5rem}
+.search input{flex:1;padding:.6rem .8rem;border:1px solid var(--muted);border-radius:8px;font:inherit}
+.tip{background:var(--accent2);color:#1f1a00;padding:.6rem 1.5rem;font-weight:600}
+.layout{display:grid;grid-template-columns:1fr;gap:1.5rem;padding:1.5rem;max-width:1200px;margin:auto}
+@media(min-width:900px){.layout{grid-template-columns:3fr 1fr}}
+.sidebar{background:var(--surface);border-radius:var(--radius);padding:1rem;align-self:start}
+.filters{margin-bottom:.5rem}
+.filters select{padding:.4rem;border-radius:6px;font:inherit}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem}
+footer{text-align:center;padding:1.5rem;color:var(--muted)}
