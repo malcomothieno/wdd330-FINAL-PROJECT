@@ -20,9 +20,10 @@
       <button type="submit" class="btn">Search</button>
     </form>
     <button id="surprise-btn" class="btn btn-alt" type="button">🎲 Surprise Me!</button>
+    <button id="favorites-btn" class="btn" type="button">♥ Favorites</button>
   </header>
 
-  <div class="tip" id="daily-tip" aria-live="polite">Daily tip: coming in Week 6.</div>
+  <div class="tip" id="daily-tip" aria-live="polite">Loading today's tip…</div>
 
   <main class="layout">
     <section class="content" aria-labelledby="results-heading">
@@ -37,7 +38,14 @@
 
     <aside class="sidebar" aria-labelledby="grocery-heading">
       <h2 id="grocery-heading">Grocery List</h2>
-      <p class="empty">Your grocery list is empty. (Interactive list arrives in Week 6.)</p>
+      <form id="grocery-form" class="grocery-form">
+        <label for="grocery-input" class="sr-only">Add custom item</label>
+        <input id="grocery-input" type="text" placeholder="Add custom item…" required>
+        <button type="submit" class="btn">Add</button>
+      </form>
+      <ul id="grocery-list" class="grocery-items"></ul>
+      <p id="grocery-empty" class="empty">Your grocery list is empty.</p>
+      <button id="clear-checked" class="btn btn-alt" type="button">Clear Checked Items</button>
     </aside>
   </main>
 

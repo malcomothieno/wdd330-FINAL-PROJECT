@@ -1,16 +1,45 @@
 import { $ } from './utils/helpers.js';
 import * as Api from './modules/MealApi.js';
-import { renderCards, showModal, setStatus, fillCategories } from './modules/UI.js';
+import * as Grocery from './modules/GroceryList.js';
+import { loadFavorites, saveFavorites } from './modules/Storage.js';
+import { getAdvice } from './modules/AdviceApi.js';
+import { renderCards, showModal, setStatus, fillCategories, renderGrocery, setTip } from './modules/UI.js';
+
+const refreshGrocery = () => renderGrocery({
+  onToggle: (id) => { Grocery.toggleItem(id); refreshGrocery(); },
+  onDelete: (id) => { Grocery.deleteItem(id); refreshGrocery(); }
+});
+
+async function addMealToGrocery(id) {
+  try {
+    const meal = await Api.getMealById(id);
+    if (!meal) return;
+    const added = Grocery.addIngredients(Api.extractIngredients(meal));
+    refreshGrocery();
+    setStatus(added ? `Added ${added} ingredient(s) from ${meal.strMeal} to your grocery list.` : `${meal.strMeal} ingredients are already on your list.`);
+  } catch (err) {
+    console.error(err);
+    setStatus('Could not add ingredients. Please try again.');
+  }
+}
+
+function toggleFavorite(id) {
+  const favs = loadFavorites();
+  saveFavorites(favs.includes(id) ? favs.filter((f) => f !== id) : [...favs, id]);
+}
+
+const cardHandlers = { onView: viewRecipe, onAdd: addMealToGrocery };
+const modalHandlers = { onAdd: addMealToGrocery, onFavorite: toggleFavorite, isFavorite: (id) => loadFavorites().includes(id) };
 
 async function load(fetcher, label) {
   setStatus('Loading…');
   try {
     const meals = await fetcher();
-    renderCards(meals, viewRecipe);
+    renderCards(meals, cardHandlers);
     setStatus(meals.length ? `${meals.length} recipe(s) found for ${label}.` : `No recipes found for ${label}.`);
   } catch (err) {
     console.error(err);
-    renderCards([], viewRecipe);
+    renderCards([], cardHandlers);
     setStatus('Something went wrong reaching the recipe service. Please try again.');
   }
 }
@@ -18,7 +47,7 @@ async function load(fetcher, label) {
 async function viewRecipe(id) {
   try {
     const meal = await Api.getMealById(id);
-    if (meal) showModal(meal);
+    if (meal) showModal(meal, modalHandlers);
   } catch (err) {
     console.error(err);
     setStatus('Could not load that recipe.');
@@ -26,6 +55,9 @@ async function viewRecipe(id) {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+  refreshGrocery();
+  getAdvice().then(setTip);
+
   $('#search-form').addEventListener('submit', (e) => {
     e.preventDefault();
     const term = $('#search-input').value.trim();
@@ -40,12 +72,28 @@ document.addEventListener('DOMContentLoaded', async () => {
   $('#surprise-btn').addEventListener('click', async () => {
     try {
       const meal = await Api.getRandomMeal();
-      if (meal) { renderCards([meal], viewRecipe); setStatus('Here is a surprise recipe!'); showModal(meal); }
+      if (meal) { renderCards([meal], cardHandlers); setStatus('Here is a surprise recipe!'); showModal(meal, modalHandlers); }
     } catch (err) {
       console.error(err);
       setStatus('Could not fetch a random recipe.');
     }
   });
+
+  $('#favorites-btn').addEventListener('click', () => {
+    const ids = loadFavorites();
+    if (!ids.length) { renderCards([], cardHandlers); setStatus('No favorites yet. Open a recipe and save it.'); return; }
+    load(async () => (await Promise.all(ids.map(Api.getMealById))).filter(Boolean), 'your favorites');
+  });
+
+  $('#grocery-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const input = $('#grocery-input');
+    Grocery.addItem(input.value);
+    input.value = '';
+    refreshGrocery();
+  });
+
+  $('#clear-checked').addEventListener('click', () => { Grocery.clearChecked(); refreshGrocery(); });
 
   try { fillCategories(await Api.getCategories()); } catch (err) { console.error(err); }
 });
