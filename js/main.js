@@ -1,7 +1,7 @@
 import { $ } from './utils/helpers.js';
 import * as Api from './modules/MealApi.js';
 import * as Grocery from './modules/GroceryList.js';
-import { loadFavorites, saveFavorites } from './modules/Storage.js';
+import { loadFavorites, saveFavorites, loadTheme, saveTheme, loadLastSearch, saveLastSearch } from './modules/Storage.js';
 import { getAdvice } from './modules/AdviceApi.js';
 import { renderCards, showModal, setStatus, fillCategories, renderGrocery, setTip } from './modules/UI.js';
 
@@ -54,14 +54,29 @@ async function viewRecipe(id) {
   }
 }
 
+function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  const btn = $('#theme-btn');
+  btn.textContent = theme === 'dark' ? '☀️ Light' : '🌙 Dark';
+  btn.setAttribute('aria-pressed', String(theme === 'dark'));
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
+  applyTheme(loadTheme());
+  $('#theme-btn').addEventListener('click', () => {
+    const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    saveTheme(next);
+  });
+  const last = loadLastSearch();
+  if (last) { $('#search-input').value = last; load(() => Api.searchMeals(last), `"${last}"`); }
   refreshGrocery();
   getAdvice().then(setTip);
 
   $('#search-form').addEventListener('submit', (e) => {
     e.preventDefault();
     const term = $('#search-input').value.trim();
-    if (term) load(() => Api.searchMeals(term), `"${term}"`);
+    if (term) { saveLastSearch(term); load(() => Api.searchMeals(term), `"${term}"`); }
   });
 
   $('#category-select').addEventListener('change', (e) => {

@@ -16,3 +16,5 @@ body{margin:0;font-family:Poppins,sans-serif;background:var(--bg);color:var(--te
 .filters select{padding:.4rem;border-radius:6px;font:inherit}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem}
 footer{text-align:center;padding:1.5rem;color:var(--muted)}
+:root[data-theme="dark"]{--bg:#0F172A;--surface:#1E293B;--text:#F1F5F9;--muted:#94A3B8}
+body,.site-header,.sidebar,.card{transition:background-color .3s,color .3s}
